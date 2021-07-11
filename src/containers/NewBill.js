@@ -6,6 +6,7 @@ export default class NewBill {
     this.document = document;
     this.onNavigate = onNavigate;
     this.firestore = firestore;
+    console.log(firestore);
     const formNewBill = this.document.querySelector(
       `form[data-testid="form-new-bill"]`
     );
