@@ -64,10 +64,7 @@ export default class NewBill {
   handleSubmit = (e) => {
     console.log("submit");
     e.preventDefault();
-    // console.log(
-    //   'e.target.querySelector(`input[data-testid="datepicker"]`).value',
-    //   e.target.querySelector(`input[data-testid="datepicker"]`).value
-    // );
+
     console.log(e.target.querySelector(`input[data-testid="datepicker"]`));
     const email = JSON.parse(localStorage.getItem("user")).email;
     const bill = {
@@ -93,6 +90,7 @@ export default class NewBill {
   };
 
   // not need to cover this function by tests
+  /* instanbul ignore next */
   createBill = (bill) => {
     if (this.firestore) {
       this.firestore

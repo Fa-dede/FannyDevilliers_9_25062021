@@ -59,6 +59,8 @@ describe("Given I am connected as an employee", () => {
       });
     });
 
+    //Check if
+
     // Test d'intégration GET
 
     describe("When I navigate to Bills UI", () => {
