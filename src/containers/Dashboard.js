@@ -156,15 +156,20 @@ export default class {
     // if (this.counter % 2 === 0) {
     // if (this.index === undefined || this.index !== index) this.index = index;
 
-    if (!this.stateOfMenus[`menu{index}IsOpen`]) {
-      this.stateOfMenus[`menu{index}IsOpen`] = true;
+    if (!this.stateOfMenus[`menu${index}IsOpen`]) {
+      this.stateOfMenus[`menu${index}IsOpen`] = true;
+      console.log(this.stateOfMenus);
+      console.log(`menu${index}IsOpen`);
+      console.log("index", index);
 
       $(`#arrow-icon${this.index}`).css({ transform: "rotate(0deg)" });
       $(`#status-bills-container${this.index}`).html(
         cards(filteredBills(bills, getStatus(this.index)))
       );
     } else {
-      this.stateOfMenus[`menu{index}IsOpen`] = false;
+      this.stateOfMenus[`menu${index}IsOpen`] = false;
+      console.log(this.stateOfMenus);
+      console.log(`menu${index}IsOpen`);
 
       $(`#arrow-icon${this.index}`).css({ transform: "rotate(90deg)" });
       $(`#status-bills-container${this.index}`).html("");
