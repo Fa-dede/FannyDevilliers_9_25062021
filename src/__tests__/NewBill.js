@@ -210,13 +210,3 @@ describe("When user is on NewBill Page and click on Submit", () => {
     expect(message).toBeTruthy();
   });
 });
-
-describe("Given I am connected as an employee", () => {
-  describe("When I am on NewBill Page", () => {
-    test("Then ...", () => {
-      const html = NewBillUI();
-      document.body.innerHTML = html;
-      //to-do write assertion
-    });
-  });
-});
