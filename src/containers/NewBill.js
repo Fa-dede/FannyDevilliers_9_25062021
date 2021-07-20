@@ -6,7 +6,6 @@ export default class NewBill {
     this.document = document;
     this.onNavigate = onNavigate;
     this.firestore = firestore;
-    console.log(firestore);
     const formNewBill = this.document.querySelector(
       `form[data-testid="form-new-bill"]`
     );
@@ -25,8 +24,9 @@ export default class NewBill {
     //Retrieve extension dot
     const selectedFileCurrentExtension = file.name.split(".").pop();
 
-    //Supprime le message d'erreur 'extension' s'il est présent
+    //Remove error message 'extension' if it exists
     let errorMessage = this.document.querySelector(".error-extension");
+    /* istanbul ignore next */
     if (errorMessage) {
       errorMessage.remove();
     }
@@ -36,18 +36,21 @@ export default class NewBill {
       const filePath = e.target.value.split(/\\/g);
       const fileName = filePath[filePath.length - 1];
 
-      //Creation firestore database si condition ok
-      this.firestore.storage
-        .ref(`justificatifs/${fileName}`)
-        .put(file)
-        .then((snapshot) => snapshot.ref.getDownloadURL())
-        .then((url) => {
-          this.fileUrl = url;
-          this.fileName = fileName;
-          console.log("file uploaded");
-        });
+      //Creation of firestore database if condition ok
+      if (this.firestore) {
+        /* istanbul ignore next */
+        this.firestore.storage
+          .ref(`justificatifs/${fileName}`)
+          .put(file)
+          .then((snapshot) => snapshot.ref.getDownloadURL())
+          .then((url) => {
+            this.fileUrl = url;
+            this.fileName = fileName;
+            console.log("file uploaded");
+          });
+      }
     } else {
-      //récupère la valeur du fichier selectionné si extension non conforme
+      //retrieve selected file value if extension isn't conform
       let titleOfSelectedFile = this.document.querySelector(
         `input[data-testid="file"]`
       );
@@ -56,7 +59,7 @@ export default class NewBill {
 
       titleOfSelectedFile.insertAdjacentHTML(
         "afterEnd",
-        "<span class = 'error-extension'> Vous devez selectionner un fichier avec une extension <em>.jpg, .jpg </em> ou <em>.png </em></span>"
+        "<span class = 'error-extension' data-testid='error-extension'> Vous devez selectionner un fichier avec une extension <em>.jpg, .jpg </em> ou <em>.png </em></span>"
       );
     }
   };
@@ -90,8 +93,9 @@ export default class NewBill {
   };
 
   // not need to cover this function by tests
-  /* instanbul ignore next */
+
   createBill = (bill) => {
+    /* istanbul ignore next */
     if (this.firestore) {
       this.firestore
         .bills()

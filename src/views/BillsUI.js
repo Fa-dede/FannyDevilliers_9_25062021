@@ -23,7 +23,6 @@ const rows = (data) => {
   //Implémentation de la fonction de tri des notes de frais par Date
   let datasSortedByDate = [];
   if (data) {
-    console.log(data);
     datasSortedByDate = data.sort((a, b) => {
       return new Date(b.date) - new Date(a.date);
     });

@@ -1,15 +1,45 @@
-import { screen } from "@testing-library/dom";
+import { fireEvent, screen } from "@testing-library/dom";
 import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import firebase from "../__mocks__/firebase.js";
+import { ROUTES, ROUTES_PATH } from "../constants/routes";
+import { setSessionStorage } from "../../setup-jest";
+import Firestore from "../app/Firestore";
+import Router from "../app/Router.js";
+import Bills from "../containers/Bills";
+
+// Initialize Employee Page
+
+const onNavigate = (pathname) => {
+  document.body.innerHTML = pathname;
+};
+
+setSessionStorage("Employee");
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", () => {
       const html = BillsUI({ data: [] });
       document.body.innerHTML = html;
-      //to-do write expect expression
+
+      const pathname = ROUTES_PATH["Bills"];
+
+      // Mock
+      jest.mock("../app/Firestore");
+      Firestore.bills = () => ({ bills, get: jest.fn().mockResolvedValue() });
+
+      // HTML DOM creation - DIV
+      Object.defineProperty(window, "location", { value: { hash: pathname } });
+      document.body.innerHTML = `<div id="root"></div>`;
+
+      // Initiate Router to put CSS into active status
+      Router();
+
+      expect(screen.getByTestId("icon-window")).toBeTruthy();
+      expect(
+        screen.getByTestId("icon-window").classList.contains("active-icon")
+      ).toBeTruthy();
     });
 
     //Check if Bills are well-sorted by dates
@@ -28,12 +58,74 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted);
     });
 
-    // NEW TESTS
+    // TEST ON ICON EYE MODAL
+
+    describe("When I click on the eye icon", () => {
+      test("A modal should open", () => {
+        // Initiate DOM
+        const html = BillsUI({ data: bills });
+        document.body.innerHTML = html;
+
+        // Initiate firestore
+        const firestore = null;
+
+        // Generate a sample of a new Bill
+        const newBillGenerate = new Bills({
+          document,
+          onNavigate,
+          firestore,
+          localStorage: window.localStorage,
+        });
+
+        // Mock
+        $.fn.modal = jest.fn();
+
+        // Retrieve the Eye Button
+        const eyeButton = screen.getAllByTestId("icon-eye")[0];
+
+        // Mock handleClickIconEye
+        const handleClickIconEye = jest.fn(() =>
+          newBillGenerate.handleClickIconEye(eyeButton)
+        );
+        // Play the Event 'click'
+        eyeButton.addEventListener("click", handleClickIconEye);
+        fireEvent.click(eyeButton);
+
+        expect(handleClickIconEye).toHaveBeenCalled();
+
+        //Retrieve the modal ID once rendered
+        const modalWindow = document.getElementById("modaleFile");
+
+        expect(modalWindow).toBeTruthy();
+      });
+    });
 
     // Check when new Bill is created that handleClickNewBill is called
     describe("When user click on the button create a new bill", () => {
       test("A new Bill Page is open", () => {
-        //to-do write
+        const html = BillsUI({ data: [] });
+        document.body.innerHTML = html;
+
+        //Generate a new Bill
+        const exampleOfaNewBill = new Bills({
+          document,
+          onNavigate,
+          firestore: null,
+          localStorage: window.localStorage,
+        });
+
+        // Mock a behavior
+        const handleClickNewBill = jest.fn(
+          exampleOfaNewBill.handleClickNewBill
+        );
+
+        //Retrieve button Submit
+        const submitNewBill = screen.getByTestId("btn-new-bill");
+        submitNewBill.addEventListener("click", handleClickNewBill);
+
+        //Play the event
+        fireEvent.click(submitNewBill);
+        expect(handleClickNewBill).toBeCalled();
       });
     });
 
@@ -59,9 +151,7 @@ describe("Given I am connected as an employee", () => {
       });
     });
 
-    //Check if
-
-    // Test d'intégration GET
+    // Integration test GET
 
     describe("When I navigate to Bills UI", () => {
       test("fetches bills from mock API GET", async () => {
@@ -104,7 +194,6 @@ describe("Given I am connected as an employee", () => {
 
         const message = await screen.getByText(/Erreur 500/);
 
-        //test
         expect(message).toBeTruthy();
       });
     });

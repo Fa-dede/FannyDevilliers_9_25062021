@@ -15,7 +15,11 @@ export const filteredBills = (data, status) => {
           selectCondition = bill.status === status;
         } else {
           // in prod environment
+          /* istanbul ignore next */
+
           const userEmail = JSON.parse(localStorage.getItem("user")).email;
+          /* istanbul ignore next */
+
           selectCondition =
             bill.status === status &&
             [...USERS_TEST, userEmail].includes(bill.email);
@@ -97,6 +101,7 @@ export default class {
       .html(
         `<div style='text-align: center;'><img width=${imgWidth} src=${billUrl} /></div>`
       );
+    /* istanbul ignore next */
     if (typeof $("#modaleFileAdmin1").modal === "function")
       $("#modaleFileAdmin1").modal("show");
   };
@@ -158,9 +163,6 @@ export default class {
 
     if (!this.stateOfMenus[`menu${index}IsOpen`]) {
       this.stateOfMenus[`menu${index}IsOpen`] = true;
-      console.log(this.stateOfMenus);
-      console.log(`menu${index}IsOpen`);
-      console.log("index", index);
 
       $(`#arrow-icon${this.index}`).css({ transform: "rotate(0deg)" });
       $(`#status-bills-container${this.index}`).html(
@@ -168,13 +170,12 @@ export default class {
       );
     } else {
       this.stateOfMenus[`menu${index}IsOpen`] = false;
-      console.log(this.stateOfMenus);
-      console.log(`menu${index}IsOpen`);
 
       $(`#arrow-icon${this.index}`).css({ transform: "rotate(90deg)" });
       $(`#status-bills-container${this.index}`).html("");
     }
 
+    /* istanbul ignore next */
     bills.forEach((bill) => {
       // $(`#open-bill${bill.id}`).off("click");
       $(`#open-bill${bill.id}`).click((e) =>
@@ -186,7 +187,7 @@ export default class {
   }
 
   // not need to cover this function by tests
-  /* instanbul ignore next */
+  /* istanbul ignore next */
   getBillsAllUsers = () => {
     if (this.firestore) {
       return this.firestore
@@ -199,6 +200,8 @@ export default class {
             date: doc.data().date,
             status: doc.data().status,
           }));
+          console.log(this.firestore.bills());
+
           return bills;
         })
         .catch(console.log);
@@ -206,7 +209,7 @@ export default class {
   };
 
   // not need to cover this function by tests
-  /* instanbul ignore next */
+  /* istanbul ignore next */
   updateBill = (bill) => {
     if (this.firestore) {
       return this.firestore

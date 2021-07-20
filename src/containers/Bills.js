@@ -10,6 +10,7 @@ export default class {
     const buttonNewBill = document.querySelector(
       `button[data-testid="btn-new-bill"]`
     );
+
     if (buttonNewBill)
       buttonNewBill.addEventListener("click", this.handleClickNewBill);
     const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`);
@@ -36,7 +37,7 @@ export default class {
   };
 
   // not need to cover this function by tests
-  /* instanbul ignore next */
+  /* istanbul ignore next */
   getBills = () => {
     const userEmail = localStorage.getItem("user")
       ? JSON.parse(localStorage.getItem("user")).email
@@ -57,7 +58,7 @@ export default class {
               } catch (e) {
                 // if for some reason, corrupted data was introduced, we manage here failing formatDate function
                 // log the error and return unformatted date in that case
-                // console.log(e,'for',doc.data())
+                console.log(e, "for", doc.data());
                 return {
                   ...doc.data(),
                   date: doc.data().date,
